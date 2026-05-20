@@ -1,7 +1,19 @@
 import { defineConfig } from "vitepress";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 // GitHub Pages serves project sites at /<repo-name>/.
 const base = "/box/";
+
+// Load the Box TextMate grammar so Shiki can highlight `box` code fences.
+const boxGrammar = JSON.parse(
+  readFileSync(
+    fileURLToPath(
+      new URL("../../grammars/textmate/box.tmLanguage.json", import.meta.url),
+    ),
+    "utf-8",
+  ),
+);
 
 export default defineConfig({
   base,
@@ -11,6 +23,10 @@ export default defineConfig({
 
   cleanUrls: true,
   lastUpdated: true,
+
+  markdown: {
+    languages: [{ ...boxGrammar, name: "box" }],
+  },
 
   head: [
     ["link", { rel: "icon", href: `${base}favicon.svg`, type: "image/svg+xml" }],

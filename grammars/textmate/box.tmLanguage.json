@@ -1,0 +1,198 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Box",
+  "scopeName": "source.box",
+  "fileTypes": ["box"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#constants" },
+    { "include": "#declaration" },
+    { "include": "#keywords" },
+    { "include": "#decorator" },
+    { "include": "#field-assignment" },
+    { "include": "#function-call" },
+    { "include": "#operation-signature" },
+    { "include": "#types" },
+    { "include": "#operators" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.box",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.box",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.box",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.box",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.box",
+          "match": "\\b-?\\d+(\\.\\d+)?\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.box",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.language.null.box",
+          "match": "\\bnull\\b"
+        }
+      ]
+    },
+    "declaration": {
+      "patterns": [
+        {
+          "match": "\\b(model|enum|alias)\\s+([A-Za-z_][A-Za-z0-9_-]*)",
+          "captures": {
+            "1": { "name": "storage.type.box" },
+            "2": { "name": "entity.name.type.box" }
+          }
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.import.box",
+          "match": "\\b(use|import|export|as)\\b"
+        },
+        {
+          "name": "storage.type.box",
+          "match": "\\b(model|enum|alias)\\b"
+        }
+      ]
+    },
+    "decorator": {
+      "patterns": [
+        {
+          "name": "entity.name.function.decorator.box",
+          "match": "@[A-Za-z_][A-Za-z0-9_]*"
+        }
+      ]
+    },
+    "field-assignment": {
+      "patterns": [
+        {
+          "match": "([a-z_][A-Za-z0-9_-]*)\\s*(=)",
+          "captures": {
+            "1": { "name": "variable.other.property.box" },
+            "2": { "name": "keyword.operator.assignment.box" }
+          }
+        }
+      ]
+    },
+    "function-call": {
+      "patterns": [
+        {
+          "match": "\\b([a-z_][A-Za-z0-9_-]*)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "entity.name.function.box" }
+          }
+        }
+      ]
+    },
+    "operation-signature": {
+      "patterns": [
+        {
+          "match": "\\b([a-z_][A-Za-z0-9_-]*)\\s*(\\()([^)]*?)(\\))\\s*(:)\\s*([A-Za-z_][A-Za-z0-9_.\\-]*(?:\\[\\])?)",
+          "captures": {
+            "1": { "name": "entity.name.function.box" },
+            "2": { "name": "punctuation.section.parens.begin.box" },
+            "3": { "patterns": [ { "include": "#param-list" } ] },
+            "4": { "name": "punctuation.section.parens.end.box" },
+            "5": { "name": "punctuation.separator.colon.box" },
+            "6": { "name": "entity.name.type.box" }
+          }
+        }
+      ]
+    },
+    "param-list": {
+      "patterns": [
+        {
+          "match": "([a-z_][A-Za-z0-9_-]*)\\s*(:)\\s*([A-Za-z_][A-Za-z0-9_.\\-]*(?:\\[\\])?)",
+          "captures": {
+            "1": { "name": "variable.parameter.box" },
+            "2": { "name": "punctuation.separator.colon.box" },
+            "3": { "name": "entity.name.type.box" }
+          }
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "match": "\\b[A-Z][A-Za-z0-9_-]*\\b",
+          "name": "entity.name.type.box"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.assignment.box",
+          "match": "="
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.section.braces.box",
+          "match": "[{}]"
+        },
+        {
+          "name": "punctuation.section.brackets.box",
+          "match": "[\\[\\]]"
+        },
+        {
+          "name": "punctuation.section.parens.box",
+          "match": "[()]"
+        },
+        {
+          "name": "punctuation.separator.comma.box",
+          "match": ","
+        },
+        {
+          "name": "punctuation.separator.colon.box",
+          "match": ":"
+        },
+        {
+          "name": "punctuation.accessor.box",
+          "match": "\\."
+        },
+        {
+          "name": "punctuation.separator.box",
+          "match": "\\?"
+        }
+      ]
+    }
+  }
+}
