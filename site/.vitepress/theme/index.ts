@@ -1,13 +1,14 @@
-import { h } from "vue";
 import DefaultTheme from "vitepress/theme";
-import BoxScene from "./components/BoxScene.vue";
+import HeroBox from "./components/HeroBox.vue";
+import Pipeline from "./components/Pipeline.vue";
+import Install from "./components/Install.vue";
 import "./style.css";
 
 export default {
   extends: DefaultTheme,
-  Layout() {
-    return h(DefaultTheme.Layout, null, {
-      "home-hero-image": () => h(BoxScene),
-    });
+  enhanceApp({ app }) {
+    app.component("HeroBox", HeroBox);
+    app.component("Pipeline", Pipeline);
+    app.component("Install", Install);
   },
 };

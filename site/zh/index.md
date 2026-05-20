@@ -1,61 +1,118 @@
 ---
-layout: home
-
-hero:
-  name: Box
-  text: 声明式定义模式与表层。
-  tagline: Compose/Flutter 风格 DSL，支持可扩展的插件类型。
-  actions:
-    - theme: brand
-      text: 快速开始
-      link: /zh/guide/getting-started
-    - theme: alt
-      text: 在 GitHub 上查看
-      link: https://github.com/adi-family/box
-
-features:
-  - title: 模式即一等公民
-    details: |
-      继承自 TypeSpec。模型、枚举、类型别名置于文件顶层，由插件在解析时
-      校验 —— 没有延迟报错的意外。
-  - title: 插件可扩展类型
-    details: |
-      核心语法固定。插件声明类型 —— `http`、`mcp`、`i18n`、`target` ——
-      每个类型有自己的 schema。插件以独立的二进制通过 JSON-RPC 协议运行。
-  - title: 处处统一的代码块形态
-    details: |
-      `kind("name") { field = value; child { ... } }`。读起来像 Compose
-      或 Flutter。没有隐藏的表达式语言；不支持继承。
-  - title: 多表层
-    details: |
-      可在同一项目中声明 HTTP 路由、MCP 工具、代码生成目标和 i18n 配置 ——
-      每个表层都是独立的类型块。
+layout: page
+title: Box
+sidebar: false
+aside: false
 ---
 
-## 一瞥语法
+<HeroBox
+  title="BOX"
+  tagline="唯一真相来源。就这样。"
+  :features='["无限可扩展", "无限组合", "无限可移植"]'
+  :eyebrow='{ text: "草案 v0.13 · 早期开发", href: "https://github.com/adi-family/box/blob/main/SPEC.md" }'
+  :primary='{ text: "快速开始", href: "/box/zh/guide/getting-started" }'
+  :secondary='{ text: "在 GitHub 查看", href: "https://github.com/adi-family/box" }'
+/>
+
+<Pipeline
+  eyebrow="源 → 输出"
+  title="一处声明,每个消费者。"
+  lead="插件认领你要暴露的表层类型;目标插件生成客户端、服务端与规范。改一处源,所有消费者随之而动。"
+  outputs-label="生成"
+  :chip-labels='{ client: "客户端", server: "服务端", spec: "规范", tools: "工具", adi_plugin: "adi 插件" }'
+>
+
+<template #http>
 
 ```box
 use "@box/http"
-use "@box/i18n"
-import "./i18n.box"
+import "./schema.box"
 
 http("user-api") {
   basePath = "/v1"
 
   route("/users") {
-    get  = list(): User[]
-    post = create(req: CreateUserRequest): User
+    get  = list(): schema.User[]
+    post = create(req: schema.CreateUserRequest): schema.User
   }
-}
 
-cli("main") {
-  command("init") {
-    description = t("cli.init.description")
+  route("/users/{id}") {
+    get    = get(id: string): schema.User
+    delete = delete(id: string): void
   }
-}
 
-model User {
-  id:    string
-  email: string
+  auth {
+    type     = bearer
+    audience = "admin-tools"
+  }
 }
 ```
+
+</template>
+
+<template #mcp>
+
+```box
+use "@box/mcp"
+import "./schema.box"
+
+mcp("user-tools") {
+  tool("get_user") {
+    description = "Fetch a user by ID"
+    input  = GetUserInput
+    output = schema.User
+  }
+
+  tool("create_user") {
+    description = "Create a new user"
+    input  = schema.CreateUserRequest
+    output = schema.User
+  }
+
+  tool("list_users") {
+    description = "List all users"
+    input  = EmptyInput
+    output = schema.User[]
+  }
+}
+```
+
+</template>
+
+<template #cli>
+
+```box
+use "@box/cli"
+use "@box/i18n"
+import "./i18n.box"
+
+cli("main") {
+  description = t("cli.main.description")
+
+  command("init") {
+    description = t("cli.init.description")
+    arg("name") {
+      description = t("cli.init.arg.name")
+      required    = true
+    }
+  }
+
+  command("build") {
+    description = t("cli.build.description")
+    flag("watch") {
+      description = t("cli.build.flag.watch")
+    }
+  }
+}
+```
+
+</template>
+
+</Pipeline>
+
+<Install
+  eyebrow="安装"
+  title="两条命令。"
+  lead="Box 以 adi cli 插件的形式发布。安装一次,然后通过 adi 命令行驱动。"
+  bar-label="终端"
+/>

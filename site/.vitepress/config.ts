@@ -26,6 +26,10 @@ export default defineConfig({
 
   markdown: {
     languages: [{ ...boxGrammar, name: "box" }],
+    // Code block always renders on a dark panel (see Pipeline.vue's
+    // #050505 background). Use a warm-toned dark theme in both modes
+    // so the syntax palette ties to the brand orange.
+    theme: { light: "vesper", dark: "vesper" },
   },
 
   head: [
