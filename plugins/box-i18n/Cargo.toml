@@ -1,0 +1,20 @@
+[package]
+name        = "box-i18n"
+description = "@box/i18n plugin — translation/localization kind provider"
+version.workspace    = true
+edition.workspace    = true
+license.workspace    = true
+authors.workspace    = true
+repository.workspace = true
+
+[[bin]]
+name = "box-i18n"
+path = "src/main.rs"
+
+[dependencies]
+box-abi-v1.workspace  = true
+serde.workspace       = true
+serde_json.workspace  = true
+async-trait.workspace = true
+tokio.workspace       = true
+anyhow.workspace      = true

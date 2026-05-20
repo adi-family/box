@@ -1,0 +1,47 @@
+// Box's local HTTP handler. Runs alongside `box serve` to expose
+// generation/validation operations over HTTP for editor tooling and
+// local automation. Not a published API — strictly local.
+//
+// The @box/http plugin defines the kind grammar; see ../specs/http.md.
+
+use "@box/http"
+import "./schema.box"
+
+http("local") {
+  basePath = "/v1"
+
+  // Trigger codegen for a project at a local filesystem path.
+  route("/generate") {
+    post = generate(req: GenerateRequest): GenerateResponse
+  }
+
+  // Validate a project without writing output.
+  route("/validate") {
+    post = validate(req: ValidateRequest): schema.ValidationResult
+  }
+
+  // Liveness + version probe.
+  route("/status") {
+    get = status(): ServerStatus
+  }
+}
+
+model GenerateRequest {
+  path:    string          // local filesystem path to the .box project
+  target?: string          // run only the named target if set, else all
+}
+
+model GenerateResponse {
+  files:   schema.EmittedFile[]
+  summary: string
+}
+
+model ValidateRequest {
+  path: string
+}
+
+model ServerStatus {
+  ok:      boolean
+  version: string
+  uptime:  int32           // seconds since server start
+}

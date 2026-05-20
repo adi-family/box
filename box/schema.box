@@ -1,0 +1,123 @@
+// Shared types for the Box plugin protocol.
+//
+// These models describe the JSON payloads exchanged over JSON-RPC 2.0
+// between the Box host and plugin processes. The RPC method signatures
+// that use them live in rpc.box.
+
+model BoxBlock {
+  kind:       string
+  name:       string
+  fields:     Field[]
+  sub_blocks: SubBlock[]
+  span:       Span
+}
+
+model Field {
+  name:  string
+  value: Value
+  span:  Span
+}
+
+model SubBlock {
+  kind:   string
+  labels: string[]
+  fields: Field[]
+  span:   Span
+}
+
+// Tagged-union value. Exactly one of the `*_value` fields is populated;
+// `kind` says which.
+model Value {
+  kind:          ValueKind
+  string_value?: string
+  number_value?: float64
+  bool_value?:   boolean
+  ident_value?:  string
+  array_value?:  Value[]
+}
+
+enum ValueKind {
+  string,
+  number,
+  boolean,
+  identifier,
+  array,
+  null,
+}
+
+// What a plugin claims at registration time.
+model KindRegistration {
+  kind:       string
+  sub_blocks: string[]
+}
+
+// What a plugin reports as the parse-time schema for one of its kinds.
+// Used by the host to validate body fields without invoking the plugin.
+model KindSchema {
+  kind:       string
+  fields:     FieldSchema[]
+  sub_blocks: SubBlockSchema[]
+}
+
+model FieldSchema {
+  name:       string
+  value_kind: ValueKind
+  required:   boolean
+}
+
+model SubBlockSchema {
+  kind:        string
+  cardinality: Cardinality
+  labels:      int32           // number of positional label strings
+}
+
+enum Cardinality {
+  one,
+  optional,
+  many,
+  at_least_one,
+}
+
+// Result of plugin-level semantic validation.
+model ValidationResult {
+  ok:     boolean
+  errors: ValidationError[]
+}
+
+model ValidationError {
+  message: string
+  span:    Span
+}
+
+// Source span — byte offsets into the originating .box file.
+model Span {
+  file:  string
+  start: int32
+  end:   int32
+}
+
+// Inputs the host hands to a plugin's `generate` call.
+model CodegenContext {
+  out_dir: string
+  target:  string         // e.g. "rust", "python", "typescript"
+  options: KeyValue[]     // plugin-specific knobs
+}
+
+model KeyValue {
+  key:   string
+  value: string
+}
+
+// One file the plugin wants to emit.
+model EmittedFile {
+  path:    string
+  content: string
+}
+
+// Plugin handshake — first response after the host's `hello` call.
+model HelloResponse {
+  plugin_name:    string
+  plugin_version: string
+  abi_version:    int32
+  capabilities:   string[]
+}

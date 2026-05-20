@@ -1,0 +1,10 @@
+// i18n configuration. The plugin owns everything about loading,
+// resolution, and file format. Box just declares which locales the
+// project supports; the plugin loads them lazily.
+
+use "@box/i18n"
+
+i18n {
+  locales = ["en", "ru", "de"]
+  default = "en"
+}

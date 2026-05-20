@@ -1,0 +1,59 @@
+// Box's MCP surface. Exposes Box operations as tools an AI client
+// (Claude, etc.) can invoke directly. Same operations as the local
+// HTTP handler in http.box, packaged as MCP tools.
+//
+// The @box/mcp plugin defines the kind grammar; see ../specs/mcp.md (TBD).
+
+use "@box/mcp"
+import "./schema.box"
+
+mcp("box-tools") {
+  tool("generate_project") {
+    description = "Run Box codegen for a project at the given local path"
+    input  = GenerateInput
+    output = GenerateOutput
+  }
+
+  tool("validate_project") {
+    description = "Parse and validate a Box project at the given local path"
+    input  = ValidateInput
+    output = schema.ValidationResult
+  }
+
+  tool("explain_kind") {
+    description = "Return the schema for a registered kind (e.g. 'http', 'route')"
+    input  = ExplainInput
+    output = schema.KindSchema
+  }
+
+  tool("list_kinds") {
+    description = "List all kinds registered by currently loaded plugins"
+    input  = EmptyInput
+    output = ListKindsOutput
+  }
+}
+
+model GenerateInput {
+  path:    string
+  target?: string
+}
+
+model GenerateOutput {
+  files:   schema.EmittedFile[]
+  summary: string
+}
+
+model ValidateInput {
+  path: string
+}
+
+model ExplainInput {
+  kind: string
+}
+
+model ListKindsOutput {
+  kinds: schema.KindRegistration[]
+}
+
+model EmptyInput {
+}

@@ -1,0 +1,70 @@
+// Box CLI command surface.
+//
+// All user-facing strings are t(...) translation calls; literals live in
+// the i18n plugin's translation tables. The @box/cli kind is sketched
+// here and needs its own spec in ../specs/cli.md.
+
+use "@box/cli"
+use "@box/i18n"
+import "./i18n.box"   // wires up the default i18n instance required by t(...)
+
+cli("main") {
+  description = t("cli.main.description", version = package.box.version)
+
+  command("init") {
+    description = t("cli.init.description")
+    arg("name") {
+      description = t("cli.init.arg.name")
+      required    = true
+    }
+  }
+
+  command("check") {
+    description = t("cli.check.description")
+    flag("watch") {
+      description = t("cli.check.flag.watch")
+    }
+  }
+
+  command("build") {
+    description = t("cli.build.description")
+    flag("watch") {
+      description = t("cli.build.flag.watch")
+    }
+    flag("target") {
+      description = t("cli.build.flag.target")
+      takes_value = true
+    }
+  }
+
+  command("fmt") {
+    description = t("cli.fmt.description")
+    flag("check") {
+      description = t("cli.fmt.flag.check")
+    }
+  }
+
+  command("plugin") {
+    description = t("cli.plugin.description")
+
+    subcommand("install") {
+      description = t("cli.plugin.install.description")
+      arg("package") {
+        description = t("cli.plugin.install.arg.package")
+        required    = true
+      }
+    }
+
+    subcommand("list") {
+      description = t("cli.plugin.list.description")
+    }
+
+    subcommand("remove") {
+      description = t("cli.plugin.remove.description")
+      arg("package") {
+        description = t("cli.plugin.remove.arg.package")
+        required    = true
+      }
+    }
+  }
+}

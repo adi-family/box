@@ -1,0 +1,46 @@
+// box/box/index.box
+//
+// Box's own surface, declared in Box. Eats own dogfood: parsing this
+// (and its siblings) is the canonical integration test for the toolchain.
+//
+// Layout:
+//   schema.box  — shared payload type models
+//   cli.box     — `box` binary commands and subcommands
+//   http.box    — local HTTP handler (`box serve`) for editor tooling
+//   mcp.box     — MCP surface for AI clients
+//   i18n.box    — i18n plugin configuration (default instance)
+//   index.box   — this file: package metadata + codegen targets + facade
+
+use "@box/codegen"
+
+import "./schema.box"
+import "./cli.box"
+import "./http.box"
+import "./mcp.box"
+import "./i18n.box"
+
+// Re-export schema models so external consumers see them directly as
+// `box.BoxBlock`, `box.KindSchema`, etc., without needing to know the
+// internal file layout.
+export "./schema.box"
+
+package("box") {
+  version     = "0.1.0"
+  description = "Box language toolchain — dogfooded in Box"
+}
+
+// Generate clients for the local HTTP handler — used by editor
+// extensions, scripts, and other tooling that wants to drive Box
+// programmatically.
+
+target("rust-client") {
+  language = rust
+  out      = "./gen/client-rust"
+  package  = "box_client"
+}
+
+target("ts-client") {
+  language = typescript
+  out      = "./gen/client-ts"
+  package  = "@box/client"
+}

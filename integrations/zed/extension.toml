@@ -1,0 +1,15 @@
+id             = "box"
+name           = "Box"
+version        = "0.1.0"
+schema_version = 1
+authors        = ["ADI Family <team@adi-family.com>"]
+description    = "Syntax support for the Box language"
+repository     = "https://github.com/adi-family/box"
+
+# Local-dev: points at the in-repo grammar via file:// URL. Zed clones
+# this on extension install and compiles `src/parser.c` from the
+# committed source. When the grammar is published, change the
+# repository URL + commit accordingly.
+[grammars.box]
+repository = "file:///Users/mgorunuch/projects/adi-family/box/grammars/tree-sitter-box"
+commit     = "56be9be01ba4a9d1a9790eb37dd83b456761277f"

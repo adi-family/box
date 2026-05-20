@@ -1,0 +1,24 @@
+# Rust / Cargo
+/target/
+*.rs.bk
+
+# Node / tree-sitter
+node_modules/
+**/node_modules/
+
+# Build artifacts
+*.wasm
+
+# Zed extension build cache — populated by `install dev extension` from
+# the grammar's file:// URL. Not source.
+/integrations/zed/grammars/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
