@@ -1,0 +1,60 @@
+name: Spec drift check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect SPEC.md ↔ SPEC-zh.md drift
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$EVENT" == "pull_request" ]]; then
+            base="$PR_BASE"
+            head="$PR_HEAD"
+          else
+            base="$PUSH_BEFORE"
+            head="$PUSH_AFTER"
+          fi
+
+          # First push to a new branch / initial commit: nothing to diff against.
+          if [[ "$base" == "0000000000000000000000000000000000000000" || -z "$base" ]]; then
+            echo "No prior ref to diff against — skipping drift check."
+            exit 0
+          fi
+
+          changed=$(git diff --name-only "$base" "$head" 2>/dev/null || true)
+          echo "Changed files in this range:"
+          echo "$changed"
+          echo "---"
+
+          en_changed=false
+          zh_changed=false
+          grep -qx "SPEC.md"    <<<"$changed" && en_changed=true || true
+          grep -qx "SPEC-zh.md" <<<"$changed" && zh_changed=true || true
+
+          if $en_changed && ! $zh_changed; then
+            echo "::warning file=SPEC.md,line=1::SPEC.md changed without a matching SPEC-zh.md update — the Chinese translation may now be out of sync."
+          fi
+
+          if $zh_changed && ! $en_changed; then
+            echo "::warning file=SPEC-zh.md,line=1::SPEC-zh.md changed without a matching SPEC.md update — EN is the authoritative spec; consider updating SPEC.md first, then mirror to SPEC-zh.md."
+          fi
+
+          echo "Drift check complete (warn-only)."
