@@ -4,6 +4,10 @@ import { fileURLToPath } from "node:url";
 
 // GitHub Pages serves project sites at /<repo-name>/.
 const base = "/box/";
+const hostname = "https://github.withadi.dev";
+const siteUrl = `${hostname}${base}`;
+const description =
+  "Box is a declarative DSL for schemas and project surfaces. Define HTTP APIs, MCP tools, CLIs, and codegen targets once — plugins generate clients, servers, and specs from a single source.";
 
 // Load the Box TextMate grammar so Shiki can highlight `box` code fences.
 const boxGrammar = JSON.parse(
@@ -18,11 +22,13 @@ const boxGrammar = JSON.parse(
 export default defineConfig({
   base,
   title: "Box",
-  description:
-    "Declarative schema and project-definition language with plugin-extensible kinds.",
+  titleTemplate: ":title · Box",
+  description,
 
   cleanUrls: true,
   lastUpdated: true,
+
+  sitemap: { hostname: siteUrl },
 
   markdown: {
     languages: [{ ...boxGrammar, name: "box" }],
@@ -34,7 +40,43 @@ export default defineConfig({
 
   head: [
     ["link", { rel: "icon", href: `${base}favicon.svg`, type: "image/svg+xml" }],
+    ["meta", { property: "og:site_name", content: "Box" }],
+    ["meta", { property: "og:type", content: "website" }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
   ],
+
+  // Canonicalize on the new host and pair EN ↔ ZH so Google treats
+  // adi-family.github.io/box and github.withadi.dev/box as one site
+  // with two locales, not four separate properties.
+  transformPageData(pageData) {
+    const rel = pageData.relativePath
+      .replace(/\.md$/, "")
+      .replace(/(^|\/)index$/, "$1");
+    const isZh = rel.startsWith("zh/") || rel === "zh/";
+    const enPath = isZh ? rel.replace(/^zh\//, "") : rel;
+    const zhPath = isZh ? rel : rel === "" ? "zh/" : `zh/${rel}`;
+
+    const canonical = `${siteUrl}${rel}`;
+    const enUrl = `${siteUrl}${enPath}`;
+    const zhUrl = `${siteUrl}${zhPath}`;
+
+    const title = pageData.frontmatter.title ?? pageData.title ?? "Box";
+    const desc = pageData.frontmatter.description ?? description;
+
+    (pageData.frontmatter.head ??= []).push(
+      ["link", { rel: "canonical", href: canonical }],
+      ["link", { rel: "alternate", hreflang: "en", href: enUrl }],
+      ["link", { rel: "alternate", hreflang: "zh-CN", href: zhUrl }],
+      ["link", { rel: "alternate", hreflang: "x-default", href: enUrl }],
+      ["meta", { property: "og:title", content: title }],
+      ["meta", { property: "og:description", content: desc }],
+      ["meta", { property: "og:url", content: canonical }],
+      ["meta", { property: "og:locale", content: isZh ? "zh_CN" : "en_US" }],
+      ["meta", { name: "twitter:title", content: title }],
+      ["meta", { name: "twitter:description", content: desc }],
+      ["meta", { name: "description", content: desc }],
+    );
+  },
 
   locales: {
     root: {
@@ -42,7 +84,6 @@ export default defineConfig({
       lang: "en",
       themeConfig: {
         nav: [
-          { text: "Guide", link: "/guide/getting-started" },
           { text: "Spec", link: "https://github.com/adi-family/box/blob/main/SPEC.md" },
         ],
         sidebar: {
@@ -68,7 +109,6 @@ export default defineConfig({
       lang: "zh-CN",
       themeConfig: {
         nav: [
-          { text: "指南", link: "/zh/guide/getting-started" },
           { text: "规范", link: "https://github.com/adi-family/box/blob/main/SPEC.md" },
         ],
         sidebar: {
