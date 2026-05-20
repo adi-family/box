@@ -1,6 +1,8 @@
 ---
 layout: page
-title: Box
+title: "Box —— 模式与项目表层的声明式 DSL"
+titleTemplate: false
+description: "Box 是声明式的模式与项目定义语言 —— 一处声明 HTTP API、MCP 工具、CLI 与代码生成目标，插件从单一来源生成客户端、服务端与规范。"
 sidebar: false
 aside: false
 ---

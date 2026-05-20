@@ -1,6 +1,8 @@
 ---
 layout: page
-title: Box
+title: "Box — declarative DSL for schemas, APIs, and codegen"
+titleTemplate: false
+description: "Box is a declarative DSL for schemas and project surfaces — define HTTP APIs, MCP tools, CLIs, and codegen targets once and let plugins emit clients, servers, and specs."
 sidebar: false
 aside: false
 ---

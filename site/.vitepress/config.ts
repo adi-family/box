@@ -6,8 +6,10 @@ import { fileURLToPath } from "node:url";
 const base = "/box/";
 const hostname = "https://github.withadi.dev";
 const siteUrl = `${hostname}${base}`;
-const description =
+const enDescription =
   "Box is a declarative DSL for schemas and project surfaces. Define HTTP APIs, MCP tools, CLIs, and codegen targets once — plugins generate clients, servers, and specs from a single source.";
+const zhDescription =
+  "Box 是声明式的模式与项目定义语言。一处声明 HTTP API、MCP 工具、CLI 与代码生成目标 —— 插件从单一来源生成客户端、服务端与规范。";
 
 // Load the Box TextMate grammar so Shiki can highlight `box` code fences.
 const boxGrammar = JSON.parse(
@@ -23,7 +25,7 @@ export default defineConfig({
   base,
   title: "Box",
   titleTemplate: ":title · Box",
-  description,
+  description: enDescription,
 
   cleanUrls: true,
   lastUpdated: true,
@@ -61,7 +63,9 @@ export default defineConfig({
     const zhUrl = `${siteUrl}${zhPath}`;
 
     const title = pageData.frontmatter.title ?? pageData.title ?? "Box";
-    const desc = pageData.frontmatter.description ?? description;
+    const desc =
+      pageData.frontmatter.description ??
+      (isZh ? zhDescription : enDescription);
 
     (pageData.frontmatter.head ??= []).push(
       ["link", { rel: "canonical", href: canonical }],
