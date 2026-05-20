@@ -9,7 +9,7 @@ aside: false
   title="BOX"
   tagline="唯一真相来源。就这样。"
   :features='["无限可扩展", "无限组合", "无限可移植"]'
-  :eyebrow='{ text: "草案 v0.13 · 早期开发", href: "https://github.com/adi-family/box/blob/main/SPEC.md" }'
+  :eyebrow='{ text: "草案 v0.13 · 早期开发", href: "https://github.com/adi-family/box/blob/main/SPEC-zh.md" }'
   :primary='{ text: "快速开始", href: "/box/zh/guide/getting-started" }'
   :secondary='{ text: "在 GitHub 查看", href: "https://github.com/adi-family/box" }'
 />

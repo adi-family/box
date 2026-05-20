@@ -109,7 +109,7 @@ export default defineConfig({
       lang: "zh-CN",
       themeConfig: {
         nav: [
-          { text: "规范", link: "https://github.com/adi-family/box/blob/main/SPEC.md" },
+          { text: "规范", link: "https://github.com/adi-family/box/blob/main/SPEC-zh.md" },
         ],
         sidebar: {
           "/zh/guide/": [

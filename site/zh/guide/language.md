@@ -58,6 +58,6 @@ description = t("cli.init.description", version = package.box.version)
 
 ## 参见
 
-- 完整规范 [SPEC.md](https://github.com/adi-family/box/blob/main/SPEC.md)
+- 完整规范 [SPEC-zh.md](https://github.com/adi-family/box/blob/main/SPEC-zh.md)
 - 插件规范：[`@box/http`](https://github.com/adi-family/box/blob/main/specs/http.md)、[`@box/i18n`](https://github.com/adi-family/box/blob/main/specs/i18n.md)
 - 自举示例：[box/box/](https://github.com/adi-family/box/tree/main/box/box) —— Box 用 Box 描述了自己的表层

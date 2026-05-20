@@ -1,5 +1,7 @@
 # Box Language — Syntax Spec
 
+> 中文版本：[SPEC-zh.md](./SPEC-zh.md)
+
 Status: **Draft v0.13** — working document. Sections marked _Open_ are unresolved.
 
 Box is a TypeSpec-derived schema and project-definition language. A `.box`
